@@ -1,6 +1,27 @@
 import pandas as pd
 import os
 
+
+def main():
+    sitelist_file = "SiteList.xlsx"
+    results_file = "Results.xlsx"
+    report_file = "result.xlsx"
+
+    df_sitelist = read_data(sitelist_file)
+    df_results = read_data(results_file)
+
+
+    if df_sitelist is not None and df_results is not None:
+        df_final = generate_report(df_sitelist, df_results)
+        save_report(df_final, report_file)  # report_file should be 'result.xlsx' if that's the intended file name
+
+    df_final = read_data(report_file)
+
+    qualidade_0(df_final)
+    maior_80(df_final)
+    menor_10(df_final)
+    sites_not_in_results(df_results, df_final, 'Site ID')
+
 def read_data(file_name):
     pd.read_excel(file_name)
     try:
@@ -36,37 +57,10 @@ def generate_report(df_sitelist,df_results):
     ]]
     return df_relatorio
 
-
 def save_report(df, file_name):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     excel_file_path = os.path.join(script_dir, file_name)
     df.to_excel(excel_file_path, index=False)
-
-
-def main():
-    sitelist_file = "SiteList.xlsx"
-    results_file = "Results.xlsx"
-    report_file = "result.xlsx"
-
-    df_sitelist = read_data(sitelist_file)
-    df_results = read_data(results_file)
-
-
-    if df_sitelist is not None and df_results is not None:
-        df_final = generate_report(df_sitelist, df_results)
-        save_report(df_final, report_file)  # report_file should be 'result.xlsx' if that's the intended file name
-
-    df_final = read_data(report_file)
-
-    qualidade_0(df_final)
-    maior_80(df_final)
-    menor_10(df_final)
-    sites_not_in_results(df_results, df_final, 'Site ID')
-
-
-
-
-
 
 def qualidade_0(df):
     print("Sites com qualidade = 0:")
@@ -97,7 +91,6 @@ def menor_10(df):
     else:
         print(df_menor_10.to_string())
         print('--------------------------------------')
-
 
 def sites_not_in_results(results_df, other_df, column_name):
     print("Sites que não estão presentes no Results:")
