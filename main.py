@@ -13,15 +13,18 @@ def main():
 
 
     if df_sitelist is not None and df_results is not None:
+        #Verifica se as planilhas não estão vazias antes de gerar o merge
         df_final = generate_report(df_sitelist, df_results)
-        save_report(df_final, report_file)  # report_file should be 'result.xlsx' if that's the intended file name
+        save_report(df_final, report_file)
 
-    qualidade_0(df_final)
-    maior_80(df_final)
-    menor_10(df_final)
+    #Chamando as funçoes para a implementação
+    quality_0(df_final)
+    mbps_more_80(df_final)
+    mbps_less_10(df_final)
     sites_not_in_results(df_results, df_final, 'Site ID')
 
 def read_data(file_name):
+    #Função para ler os arquivos
     pd.read_excel(file_name)
     try:
         df = pd.read_excel(file_name)
@@ -31,6 +34,7 @@ def read_data(file_name):
         return None
 
 def generate_report(df_sitelist,df_results):
+    #Função para realizar o merge e gerar o novo DF
     df_sitelist_columns = df_sitelist[["Site Name", "Site ID"]]
     df_results_columns = df_results[["Site ID", "Equipment","Signal (%)","Quality (0-10)","Mbps","Year"]]
     df = df_sitelist_columns.merge(df_results_columns, on="Site ID")
@@ -57,11 +61,13 @@ def generate_report(df_sitelist,df_results):
     return df_relatorio
 
 def save_report(df, file_name):
+    #Utilizando a biblioteca OS para salvar o excel na mesma pasta da main
     script_dir = os.path.dirname(os.path.abspath(__file__))
     excel_file_path = os.path.join(script_dir, file_name)
     df.to_excel(excel_file_path, index=False)
 
-def Alerta_Yes(df):
+def alert_yes(df):
+    #Realizando a querry para procurar o que é pedido
     print("Sites com velocidade Menor que 10 Mbps:")
     df_alerta_yes = df.query('Alert == "Yes"')
     if df_alerta_yes.empty:
@@ -71,7 +77,7 @@ def Alerta_Yes(df):
         print(df_alerta_yes.to_string())
         print('--------------------------------------')
 
-def qualidade_0(df):
+def quality_0(df):
     print("Sites com qualidade = 0:")
     df_qualidade = df.query('`Quality (0-10)` == 0')
     if df_qualidade.empty:
@@ -81,7 +87,7 @@ def qualidade_0(df):
         print(df_qualidade.to_string())
         print('--------------------------------------')
 
-def maior_80(df):
+def mbps_more_80(df):
     print("Site com velocidade maior que 80 Mbps:")
     df_maior_80 = df.query('Mbps > 80')
     if df_maior_80.empty:
@@ -91,7 +97,7 @@ def maior_80(df):
         print(df_maior_80.to_string())
         print('--------------------------------------')
 
-def menor_10(df):
+def mbps_less_10(df):
     print("Sites com velocidade Menor que 10 Mbps:")
     df_menor_10 = df.query('Mbps < 10')
     if df_menor_10.empty:
@@ -102,6 +108,7 @@ def menor_10(df):
         print('--------------------------------------')
 
 def sites_not_in_results(results_df, other_df, column_name):
+    #busca quais são os sites que se encontram em uma planilha e não na outra
     print("Sites que não estão presentes no Results:")
 
     results_sites = set(results_df[column_name])
