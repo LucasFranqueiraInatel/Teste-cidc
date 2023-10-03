@@ -3,6 +3,7 @@ import os
 
 
 def main():
+    #Função principal, todas as funçoes são chamadas para atender ao que é nescessario
     sitelist_file = "SiteList.xlsx"
     results_file = "Results.xlsx"
     report_file = "result.xlsx"
@@ -14,8 +15,6 @@ def main():
     if df_sitelist is not None and df_results is not None:
         df_final = generate_report(df_sitelist, df_results)
         save_report(df_final, report_file)  # report_file should be 'result.xlsx' if that's the intended file name
-
-    df_final = read_data(report_file)
 
     qualidade_0(df_final)
     maior_80(df_final)
@@ -62,6 +61,16 @@ def save_report(df, file_name):
     excel_file_path = os.path.join(script_dir, file_name)
     df.to_excel(excel_file_path, index=False)
 
+def Alerta_Yes(df):
+    print("Sites com velocidade Menor que 10 Mbps:")
+    df_alerta_yes = df.query('Alert == "Yes"')
+    if df_alerta_yes.empty:
+        print("Nenhum site encontrado com alerta ativo.")
+        print('--------------------------------------')
+    else:
+        print(df_alerta_yes.to_string())
+        print('--------------------------------------')
+
 def qualidade_0(df):
     print("Sites com qualidade = 0:")
     df_qualidade = df.query('`Quality (0-10)` == 0')
@@ -95,11 +104,9 @@ def menor_10(df):
 def sites_not_in_results(results_df, other_df, column_name):
     print("Sites que não estão presentes no Results:")
 
-    # Get unique site names from both DataFrames
     results_sites = set(results_df[column_name])
     other_sites = set(other_df[column_name])
 
-    # Sites that are in other_df but not in results_df
     sites_not_in_results = other_sites - results_sites
 
     if not sites_not_in_results:
@@ -114,31 +121,4 @@ if __name__ == '__main__':
 
 
 
-
-
-
-
-
-
-
-
-
-# print("Sites com alerta ativos:")
-
-#def alerta_ativo():
-# df_alertas = df_busca.query('Alerts == "Yes"')
-# # print(df_alertas.to_string())
-
-#def qualidade_0():
-#   print("Sites com 0 de qualidade:")
-#   df_qualidade = df_busca.query('`Quality (0-10)` == 0')
-#   print(df_qualidade.to_string())
-#
-#def maior_80():
-#   df_maior_80 = df_busca.query('Mbps > 80')
-#   print(df_maior_80.to_string())
-
-#def menor_10():
-#   df_menor_10 = df_busca.query('Mbps < 10')
-#   print(df_menor_10.to_string())
 
