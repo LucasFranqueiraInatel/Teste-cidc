@@ -33,3 +33,4 @@ Um exemplo disso é na função **alert_yes()** como na planilha result.xlsx nã
 
 Segue a questão a qual fiquei com duvida sobre qual planilha era a correta.
 ![image](https://github.com/JoaoPedroAM/Teste-cidc/assets/64596663/26032f48-cf82-4aad-8913-91d5cfd685de)
+ 
